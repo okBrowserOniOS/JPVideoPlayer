@@ -56,8 +56,7 @@
 
 @end
 
-static NSString *JPVideoPlayerURLScheme = @"com.jpvideoplayer.system.cannot.recognition.scheme.www";
-static NSString *JPVideoPlayerURL = @"www.newpan.com";
+static NSString * _Nullable SchemeSuffix = @"-downloader";
 @implementation JPVideoPlayerModel
 
 #pragma mark - JPVideoPlayerPlaybackProtocol
@@ -236,7 +235,7 @@ static NSString *JPVideoPlayerURL = @"www.newpan.com";
     resourceLoader.delegate = self;
     
     // url instead of `[self composeFakeVideoURL]`, otherwise some urls can not play normally
-    AVURLAsset *videoURLAsset = [AVURLAsset URLAssetWithURL:[self composeFakeVideoURL] options:nil];
+    AVURLAsset *videoURLAsset = [AVURLAsset URLAssetWithURL:[self composeFakeVideoURL:url] options:nil];
     [videoURLAsset.resourceLoader setDelegate:resourceLoader queue:dispatch_get_main_queue()];
     AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:videoURLAsset];
     [self removePlayerItemDidPlayToEndObserver];
@@ -642,11 +641,12 @@ didReceiveLoadingRequestTask:(JPResourceLoadingRequestWebTask *)requestTask {
     playerModel.playerLayer.videoGravity = videoGravity;
 }
 
-- (NSURL *)composeFakeVideoURL {
-    NSURLComponents *components = [[NSURLComponents alloc] initWithURL:[NSURL URLWithString:JPVideoPlayerURL] resolvingAgainstBaseURL:NO];
-    components.scheme = JPVideoPlayerURLScheme;
+- (NSURL *)composeFakeVideoURL:(NSURL *)originalURL {
+    NSURLComponents *components = [NSURLComponents componentsWithURL:originalURL resolvingAgainstBaseURL:NO];
+    components.scheme = [components.scheme stringByAppendingString:SchemeSuffix];
     return [components URL];
 }
+
 
 - (void)displayVideoPicturesOnShowLayer {
     if (!self.playerModel.isCancelled && !self.playerModel.playerLayer.superlayer) {

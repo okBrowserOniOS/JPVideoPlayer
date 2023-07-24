@@ -1,5 +1,6 @@
 platform :ios, '8.0'
-
+#如果报错：JPNavigationController/UIViewController+ViewControllers.m Build input file cannot be found:
+#pod中将JPNavigationController 注释掉，然后执行pod install，成功以后再打开注释，再执行pod install。
 target "JPVideoPlayerDemo" do
 
 pod 'JPNavigationController', '~> 2.1.3'

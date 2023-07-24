@@ -43,7 +43,7 @@ static NSArray<NSString *> *JPVideoPlayerDownloaderSupportedMIMETypes;
 @implementation JPVideoPlayerDownloader
 
 + (void)load {
-    JPVideoPlayerDownloaderSupportedMIMETypes = @[@"video", @"audio"];
+    JPVideoPlayerDownloaderSupportedMIMETypes = @[@"video", @"audio", @"application/mp4", @"application/octet-stream", @"binary/octet-stream"];
 }
 
 + (nonnull instancetype)sharedDownloader {
@@ -167,19 +167,6 @@ static NSArray<NSString *> *JPVideoPlayerDownloaderSupportedMIMETypes;
 
 
 #pragma mark - NSURLSessionDataDelegate
-
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
-willPerformHTTPRedirection:(NSHTTPURLResponse *)response
-        newRequest:(NSURLRequest *)request
-        completionHandler:(void (^)(NSURLRequest * _Nullable))completionHandler {
-    if (response) {
-        JPDebugLog(@"URLSession will perform HTTP redirection");
-        self.runningTask.loadingRequest.redirect = request;
-    }
-    if(completionHandler){
-        completionHandler(request);
-    }
-}
 
 - (void)URLSession:(NSURLSession *)session
           dataTask:(NSURLSessionDataTask *)dataTask
